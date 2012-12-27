@@ -147,11 +147,6 @@ src_install() {
 	insinto "${HACKDIR}"
 	doins "${FILESDIR}/dot.nethackrc"
 
-	echo "!!!${D}"
-	echo "!!!${EPREFIX}"
-	echo "!!!${ED}"
-	echo "!!!${HACKDIR}"
-
 	local windowtypes="tty"
 	use X && windowtypes="${windowtypes} x11"
 	set -- ${windowtypes}
