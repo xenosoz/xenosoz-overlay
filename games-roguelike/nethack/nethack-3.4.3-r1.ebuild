@@ -13,7 +13,7 @@ SRC_URI="mirror://sourceforge/nethack/${PN}-${MY_PV}-src.tgz"
 LICENSE="nethack"
 SLOT="0"
 KEYWORDS="amd64 hppa ppc sparc x86 ~x86-fbsd"
-IUSE="X"
+IUSE="X unicode menucolor paranoid"
 
 RDEPEND=">=sys-libs/ncurses-5.2-r5
 	X? (
@@ -67,6 +67,29 @@ src_prepare() {
 
 	if use X ; then
 		epatch "${FILESDIR}/${PV}-X-support.patch"
+	fi
+
+	if use unicode; then
+		epatch "${FILESDIR}/${P}-unicode.patch"
+	fi
+
+	if use menucolor; then
+		OS=`uname -o`
+		if [[ ! ${OS#GNU} != ${OS} ]] ; then
+			# uncomment "# define MENU_COLOR_REGEX_POSIX"
+			einfo "Assuming ${OS} is POSIX-compliant ..."
+			epatch "${FILESDIR}/${P}-menucolor.patch"
+			sed -i \
+				-e "s/\/\*\(# define MENU_COLOR_REGEX_POSIX\) \*\//\1/" \
+				include/config.h \
+				|| die "setting menu_color_regex_posix"
+		else
+			epatch "${FILESDIR}/${P}-menucolor.patch"
+		fi
+	fi
+
+	if use paranoid; then
+		epatch "${FILESDIR}/${P}-paranoid.patch"
 	fi
 }
 
@@ -172,5 +195,10 @@ src_install() {
 
 pkg_postinst() {
 	games_pkg_postinst
+	if use menucolor; then
+		elog "USE flag 'menucolor' enabled. You can"
+		elog "    cat \"OPTIONS=menucolors\" >> ~/.nethackrc"
+		elog "to enable this feature."
+	fi
 	elog "You may want to look at /etc/skel/.nethackrc for interesting options"
 }
