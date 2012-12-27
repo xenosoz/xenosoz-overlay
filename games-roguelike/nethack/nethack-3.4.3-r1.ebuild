@@ -13,7 +13,7 @@ SRC_URI="mirror://sourceforge/nethack/${PN}-${MY_PV}-src.tgz"
 LICENSE="nethack"
 SLOT="0"
 KEYWORDS="amd64 hppa ppc sparc x86 ~x86-fbsd"
-IUSE="X unicode menucolor paranoid"
+IUSE="X unicode menucolor paranoid easywizard"
 
 RDEPEND=">=sys-libs/ncurses-5.2-r5
 	X? (
@@ -90,6 +90,10 @@ src_prepare() {
 
 	if use paranoid; then
 		epatch "${FILESDIR}/${P}-paranoid.patch"
+	fi
+
+	if use easywizard; then
+		epatch "${FILESDIR}/${P}-easywizard.patch"
 	fi
 }
 
