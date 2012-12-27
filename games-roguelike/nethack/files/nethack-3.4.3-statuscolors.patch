@@ -1,58 +1,6 @@
-diff -Nurdp nethack-3.4.3/include/color.h nethack-3.4.3.statuscolors/include/color.h
---- nethack-3.4.3/include/color.h	2003-12-07 15:39:13.000000000 -0800
-+++ nethack-3.4.3.statuscolors/include/color.h	2006-11-11 19:17:57.000000000 -0800
-@@ -49,4 +49,23 @@
- #define DRAGON_SILVER	CLR_BRIGHT_CYAN
- #define HI_ZAP		CLR_BRIGHT_BLUE
- 
-+#ifdef STATUS_COLORS
-+struct color_option {
-+    int color;
-+    int attr_bits;
-+};
-+
-+struct percent_color_option {
-+	int percentage;
-+	struct color_option color_option;
-+	const struct percent_color_option *next;
-+};
-+
-+struct text_color_option {
-+	const char *text;
-+	struct color_option color_option;
-+	const struct text_color_option *next;
-+};
-+#endif
-+
- #endif /* COLOR_H */
-diff -Nurdp nethack-3.4.3/include/config.h nethack-3.4.3.statuscolors/include/config.h
---- nethack-3.4.3/include/config.h	2003-12-07 15:39:13.000000000 -0800
-+++ nethack-3.4.3.statuscolors/include/config.h	2006-11-11 19:17:57.000000000 -0800
-@@ -348,6 +348,8 @@ typedef unsigned char	uchar;
-  * bugs left here.
-  */
- 
-+#define STATUS_COLORS
-+
- /*#define GOLDOBJ */	/* Gold is kept on obj chains - Helge Hafting */
- /*#define AUTOPICKUP_EXCEPTIONS */ /* exceptions to autopickup */
- 
-diff -Nurdp nethack-3.4.3/include/flag.h nethack-3.4.3.statuscolors/include/flag.h
---- nethack-3.4.3/include/flag.h	2003-12-07 15:39:13.000000000 -0800
-+++ nethack-3.4.3.statuscolors/include/flag.h	2006-11-11 19:17:57.000000000 -0800
-@@ -183,6 +183,9 @@ struct instance_flags {
- 	char prevmsg_window;	/* type of old message window to use */
- 	boolean  extmenu;	/* extended commands use menu interface */
- #endif
-+#if defined(STATUS_COLORS) && defined(TEXTCOLOR)
-+	boolean use_status_colors; /* use color in status line; only if wc_color */
-+#endif
- #ifdef MFLOPPY
- 	boolean  checkspace;	/* check disk space before writing files */
- 				/* (in iflags to allow restore after moving
-diff -Nurdp nethack-3.4.3/README.statuscolors nethack-3.4.3.statuscolors/README.statuscolors
---- nethack-3.4.3/README.statuscolors	1969-12-31 16:00:00.000000000 -0800
-+++ nethack-3.4.3.statuscolors/README.statuscolors	2006-11-11 20:10:53.000000000 -0800
+diff -Nurdp nethack-3.4.3/README.statuscolors nethack-3.4.3-statuscolors/README.statuscolors
+--- nethack-3.4.3/README.statuscolors	1970-01-01 09:00:00.000000000 +0900
++++ nethack-3.4.3-statuscolors/README.statuscolors	2012-12-27 17:45:57.000000000 +0900
 @@ -0,0 +1,62 @@
 +Statuscolors is a patch for Nethack (version 3.4.3) that attempts to generalize
 +the hpmon patch to be more like the menucolor patch. As of v1.2, the
@@ -116,9 +64,61 @@ diff -Nurdp nethack-3.4.3/README.statuscolors nethack-3.4.3.statuscolors/README.
 +Shachaf & Oren Ben-Kiki
 +shachaf+nethack@gmail.com
 +nethack-oren@ben-kiki.org
-diff -Nurdp nethack-3.4.3/src/botl.c nethack-3.4.3.statuscolors/src/botl.c
---- nethack-3.4.3/src/botl.c	2003-12-07 15:39:13.000000000 -0800
-+++ nethack-3.4.3.statuscolors/src/botl.c	2006-11-11 19:17:57.000000000 -0800
+diff -Nurdp nethack-3.4.3/include/color.h nethack-3.4.3-statuscolors/include/color.h
+--- nethack-3.4.3/include/color.h	2003-12-08 08:39:13.000000000 +0900
++++ nethack-3.4.3-statuscolors/include/color.h	2012-12-27 17:45:57.000000000 +0900
+@@ -49,4 +49,23 @@
+ #define DRAGON_SILVER	CLR_BRIGHT_CYAN
+ #define HI_ZAP		CLR_BRIGHT_BLUE
+ 
++#ifdef STATUS_COLORS
++struct color_option {
++    int color;
++    int attr_bits;
++};
++
++struct percent_color_option {
++	int percentage;
++	struct color_option color_option;
++	const struct percent_color_option *next;
++};
++
++struct text_color_option {
++	const char *text;
++	struct color_option color_option;
++	const struct text_color_option *next;
++};
++#endif
++
+ #endif /* COLOR_H */
+diff -Nurdp nethack-3.4.3/include/config.h nethack-3.4.3-statuscolors/include/config.h
+--- nethack-3.4.3/include/config.h	2003-12-08 08:39:13.000000000 +0900
++++ nethack-3.4.3-statuscolors/include/config.h	2012-12-27 17:45:57.000000000 +0900
+@@ -348,6 +348,8 @@ typedef unsigned char	uchar;
+  * bugs left here.
+  */
+ 
++#define STATUS_COLORS
++
+ /*#define GOLDOBJ */	/* Gold is kept on obj chains - Helge Hafting */
+ /*#define AUTOPICKUP_EXCEPTIONS */ /* exceptions to autopickup */
+ 
+diff -Nurdp nethack-3.4.3/include/flag.h nethack-3.4.3-statuscolors/include/flag.h
+--- nethack-3.4.3/include/flag.h	2003-12-08 08:39:13.000000000 +0900
++++ nethack-3.4.3-statuscolors/include/flag.h	2012-12-27 17:45:57.000000000 +0900
+@@ -183,6 +183,9 @@ struct instance_flags {
+ 	char prevmsg_window;	/* type of old message window to use */
+ 	boolean  extmenu;	/* extended commands use menu interface */
+ #endif
++#if defined(STATUS_COLORS) && defined(TEXTCOLOR)
++	boolean use_status_colors; /* use color in status line; only if wc_color */
++#endif
+ #ifdef MFLOPPY
+ 	boolean  checkspace;	/* check disk space before writing files */
+ 				/* (in iflags to allow restore after moving
+diff -Nurdp nethack-3.4.3/src/botl.c nethack-3.4.3-statuscolors/src/botl.c
+--- nethack-3.4.3/src/botl.c	2003-12-08 08:39:13.000000000 +0900
++++ nethack-3.4.3-statuscolors/src/botl.c	2012-12-27 17:45:57.000000000 +0900
 @@ -34,6 +34,106 @@ STATIC_DCL void NDECL(bot2);
  #define MAXCO (COLNO+20)
  #endif
@@ -355,23 +355,23 @@ diff -Nurdp nethack-3.4.3/src/botl.c nethack-3.4.3.statuscolors/src/botl.c
  }
  
  void
-diff -Nurdp nethack-3.4.3/src/files.c nethack-3.4.3.statuscolors/src/files.c
---- nethack-3.4.3/src/files.c	2003-12-07 15:39:13.000000000 -0800
-+++ nethack-3.4.3.statuscolors/src/files.c	2006-11-11 19:46:27.000000000 -0800
-@@ -1797,6 +1797,10 @@ char		*tmp_levels;
- 	} else if (match_varname(buf, "GRAPHICS", 4)) {
+diff -Nurdp nethack-3.4.3/src/files.c nethack-3.4.3-statuscolors/src/files.c
+--- nethack-3.4.3/src/files.c	2003-12-08 08:39:13.000000000 +0900
++++ nethack-3.4.3-statuscolors/src/files.c	2012-12-27 17:46:40.000000000 +0900
+@@ -1798,6 +1798,10 @@ char		*tmp_levels;
  	    len = get_uchars(fp, buf, bufp, translate, FALSE,
  			     MAXPCHARS, "GRAPHICS");
+ 	    assign_graphics(translate, len, MAXPCHARS, 0);
 +#if defined(STATUS_COLORS) && defined(TEXTCOLOR)
 +	} else if (match_varname(buf, "STATUSCOLOR", 11)) {
 +	    (void) parse_status_color_options(bufp);
 +#endif
- 	    assign_graphics(translate, len, MAXPCHARS, 0);
  	} else if (match_varname(buf, "DUNGEON", 4)) {
  	    len = get_uchars(fp, buf, bufp, translate, FALSE,
-diff -Nurdp nethack-3.4.3/src/options.c nethack-3.4.3.statuscolors/src/options.c
---- nethack-3.4.3/src/options.c	2003-12-07 15:39:13.000000000 -0800
-+++ nethack-3.4.3.statuscolors/src/options.c	2006-11-11 19:19:30.000000000 -0800
+ 			     MAXDCHARS, "DUNGEON");
+diff -Nurdp nethack-3.4.3/src/options.c nethack-3.4.3-statuscolors/src/options.c
+--- nethack-3.4.3/src/options.c	2003-12-08 08:39:13.000000000 +0900
++++ nethack-3.4.3-statuscolors/src/options.c	2012-12-27 17:45:57.000000000 +0900
 @@ -125,6 +125,11 @@ static struct Bool_Opt
  #else
  	{"mail", (boolean *)0, TRUE, SET_IN_FILE},
@@ -576,9 +576,9 @@ diff -Nurdp nethack-3.4.3/src/options.c nethack-3.4.3.statuscolors/src/options.c
  	fullname = "suppress_alert";
  	if (match_optname(opts, fullname, 4, TRUE)) {
  		op = string_for_opt(opts, negated);
-diff -Nurdp nethack-3.4.3/src/save.c nethack-3.4.3.statuscolors/src/save.c
---- nethack-3.4.3/src/save.c	2003-12-07 15:39:13.000000000 -0800
-+++ nethack-3.4.3.statuscolors/src/save.c	2006-11-11 19:45:02.000000000 -0800
+diff -Nurdp nethack-3.4.3/src/save.c nethack-3.4.3-statuscolors/src/save.c
+--- nethack-3.4.3/src/save.c	2003-12-08 08:39:13.000000000 +0900
++++ nethack-3.4.3-statuscolors/src/save.c	2012-12-27 17:45:57.000000000 +0900
 @@ -48,6 +48,12 @@ static long nulls[10];
  #define HUP
  #endif
