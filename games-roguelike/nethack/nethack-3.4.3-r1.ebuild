@@ -13,7 +13,7 @@ SRC_URI="mirror://sourceforge/nethack/${PN}-${MY_PV}-src.tgz"
 LICENSE="nethack"
 SLOT="0"
 KEYWORDS="amd64 hppa ppc sparc x86 ~x86-fbsd"
-IUSE="X unicode menucolor paranoid easywizard"
+IUSE="X unicode menucolor statuscolors paranoid easywizard"
 
 RDEPEND=">=sys-libs/ncurses-5.2-r5
 	X? (
@@ -86,6 +86,10 @@ src_prepare() {
 		else
 			epatch "${FILESDIR}/${P}-menucolor.patch"
 		fi
+	fi
+
+	if use statuscolors; then
+		epatch "${FILESDIR}/${P}-statuscolors.patch"
 	fi
 
 	if use paranoid; then
