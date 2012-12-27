@@ -48,10 +48,10 @@ src_prepare() {
 	mv doc/recover.6 doc/nethack-recover.6
 
 	sed -i \
-		-e "s:GENTOO_STATEDIR:${GAMES_STATEDIR}/${PN}:" include/unixconf.h \
+		-e "s:GENTOO_STATEDIR:${EPREFIX}${GAMES_STATEDIR}/${PN}:" include/unixconf.h \
 		|| die "setting statedir"
 	sed -i \
-		-e "s:GENTOO_HACKDIR:${HACKDIR}:" include/config.h \
+		-e "s:GENTOO_HACKDIR:${EPREFIX}${HACKDIR}:" include/config.h \
 		|| die "setting hackdir"
 	# set the default pager from the environment bug #52122
 	if [[ -n "${PAGER}" ]] ; then
@@ -98,22 +98,22 @@ src_install() {
 		LFLAGS="-L/usr/X11R6/lib" \
 		GAMEPERM=0755 \
 		GAMEUID="${GAMES_USER}" GAMEGRP="${GAMES_GROUP}" \
-		PREFIX="${D}/usr" \
-		GAMEDIR="${D}${HACKDIR}" \
-		SHELLDIR="${D}/${GAMES_BINDIR}" \
+		PREFIX="${ED}/usr" \
+		GAMEDIR="${ED}${HACKDIR}" \
+		SHELLDIR="${ED}/${GAMES_BINDIR}" \
 		install \
 		|| die "emake install failed"
 
 	# We keep this stuff in ${GAMES_STATEDIR} instead so tidy up.
-	rm -rf "${D}/usr/share/games/nethack/save"
+	rm -rf "${ED}/usr/share/games/nethack/save"
 
 	newgamesbin util/recover recover-nethack || die "newgamesbin failed"
 
 	# The final nethack is a sh script.  This fixes the hard-coded
-	# HACKDIR directory so it doesn't point to ${D}/usr/share/nethackdir
+	# HACKDIR directory so it doesn't point to ${ED}/usr/share/nethackdir
 	sed -i \
-		-e "s:^\(HACKDIR=\).*:\1${HACKDIR}:" \
-		"${D}${GAMES_BINDIR}/nethack" \
+		-e "s:^\(HACKDIR=\).*:\1${EPREFIX}${HACKDIR}:" \
+		"${ED}${GAMES_BINDIR}/nethack" \
 		|| die "sed ${GAMES_BINDIR}/nethack failed"
 
 	doman doc/*.6
@@ -124,16 +124,21 @@ src_install() {
 	insinto "${HACKDIR}"
 	doins "${FILESDIR}/dot.nethackrc"
 
+	echo "!!!${D}"
+	echo "!!!${EPREFIX}"
+	echo "!!!${ED}"
+	echo "!!!${HACKDIR}"
+
 	local windowtypes="tty"
 	use X && windowtypes="${windowtypes} x11"
 	set -- ${windowtypes}
 	sed -i \
 		-e "s:GENTOO_WINDOWTYPES:${windowtypes}:" \
 		-e "s:GENTOO_DEFWINDOWTYPE:$1:" \
-		"${D}${HACKDIR}/dot.nethackrc" \
+		"${ED}${HACKDIR}/dot.nethackrc" \
 		|| die "sed ${HACKDIR}/dot.nethackrc failed"
 	insinto /etc/skel
-	newins "${D}/${HACKDIR}/dot.nethackrc" .nethackrc
+	newins "${ED}/${HACKDIR}/dot.nethackrc" .nethackrc
 
 	if use X ; then
 		# install nethack fonts
@@ -142,7 +147,7 @@ src_install() {
 		bdftopcf -o ibm.pcf ibm.bdf || die "Converting fonts failed"
 		insinto "${HACKDIR}/fonts"
 		doins *.pcf
-		cd "${D}/${HACKDIR}/fonts"
+		cd "${ED}/${HACKDIR}/fonts"
 		mkfontdir || die "The action mkfontdir ${HACKDIR}/fonts failed"
 
 		# copy nethack x application defaults
@@ -151,18 +156,18 @@ src_install() {
 		newins NetHack.ad NetHack || die "Failed to install NetHack X app defaults"
 		sed -i \
 			-e 's:^!\(NetHack.tile_file.*\):\1:' \
-			"${D}/etc/X11/app-defaults/NetHack" \
+			"${ED}/etc/X11/app-defaults/NetHack" \
 			|| die "sed /etc/X11/app-defaults/NetHack failed"
 	fi
 
 	local statedir="${GAMES_STATEDIR}/${PN}"
 	keepdir "${statedir}/save"
-	mv "${D}/${HACKDIR}/"{record,logfile,perm} "${D}/${statedir}/"
+	mv "${ED}/${HACKDIR}/"{record,logfile,perm} "${ED}/${statedir}/"
 	make_desktop_entry nethack "Nethack"
 
 	prepgamesdirs
-	chmod -R 660 "${D}/${statedir}"
-	chmod 770 "${D}/${statedir}" "${D}/${statedir}/save"
+	chmod -R 660 "${ED}/${statedir}"
+	chmod 770 "${ED}/${statedir}" "${ED}/${statedir}/save"
 }
 
 pkg_postinst() {
