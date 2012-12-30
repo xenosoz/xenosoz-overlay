@@ -1,7 +1,7 @@
-diff -urN nethack-3.4.3-orig//dat/opthelp nethack-3.4.3-paranoid//dat/opthelp
---- nethack-3.4.3-orig//dat/opthelp	2003-12-08 08:39:13.000000000 +0900
-+++ nethack-3.4.3-paranoid//dat/opthelp	2011-11-05 05:36:09.000000000 +0900
-@@ -61,6 +61,15 @@
+diff -urN nethack-3.4.3/dat/opthelp nethack-3.4.3-paranoid/dat/opthelp
+--- nethack-3.4.3/dat/opthelp	2003-12-08 08:39:13.000000000 +0900
++++ nethack-3.4.3-paranoid/dat/opthelp	2012-12-30 19:07:47.000000000 +0900
+@@ -61,6 +61,18 @@
  Boolean option if MFLOPPY was set at compile time:
  checkspace check free disk space before writing files to disk     [TRUE]
  
@@ -12,15 +12,18 @@ diff -urN nethack-3.4.3-orig//dat/opthelp nethack-3.4.3-paranoid//dat/opthelp
 +paranoid_quit  ask for explicit 'yes' when quitting               [FALSE]
 +
 +Boolean option if PARANOID was set at compile time:
++paranoid_die   ask for explicit 'yes' when dying in Explore mode  [FALSE]
++
++Boolean option if PARANOID was set at compile time:
 +paranoid_remove always show menu with the T and R commands        [FALSE]
 +
  Boolean option if EXP_ON_BOTL was set at compile time:
  showexp    display your accumulated experience points             [FALSE]
  
-diff -urN nethack-3.4.3-orig//doc/Guidebook.mn nethack-3.4.3-paranoid//doc/Guidebook.mn
---- nethack-3.4.3-orig//doc/Guidebook.mn	2003-12-08 08:39:13.000000000 +0900
-+++ nethack-3.4.3-paranoid//doc/Guidebook.mn	2011-11-05 05:36:09.000000000 +0900
-@@ -2027,6 +2027,15 @@
+diff -urN nethack-3.4.3/doc/Guidebook.mn nethack-3.4.3-paranoid/doc/Guidebook.mn
+--- nethack-3.4.3/doc/Guidebook.mn	2003-12-08 08:39:13.000000000 +0900
++++ nethack-3.4.3-paranoid/doc/Guidebook.mn	2012-12-30 19:06:49.000000000 +0900
+@@ -2027,6 +2027,18 @@
  The value of this option should be a string containing the
  symbols for the various object types.  Any omitted types are filled in
  at the end from the previous order.
@@ -30,16 +33,19 @@ diff -urN nethack-3.4.3-orig//doc/Guidebook.mn nethack-3.4.3-paranoid//doc/Guide
 +.lp paranoid_quit
 +If true, asks you to type the word ``yes'' when quitting or entering
 +Explore mode, not just the letter ``y''.
++.lp paranoid_die
++If true, asks you to type the word ``yes'' when dying in
++Explore mode, not just the letter ``y''.
 +.lp paranoid_remove
 +If true, always show menu with the R and T commands even when there is
 +only one item to remove or take off.
  .lp perm_invent
  If true, always display your current inventory in a window.  This only
  makes sense for windowing system interfaces that implement this feature.
-diff -urN nethack-3.4.3-orig//doc/Guidebook.tex nethack-3.4.3-paranoid//doc/Guidebook.tex
---- nethack-3.4.3-orig//doc/Guidebook.tex	2003-12-08 08:39:13.000000000 +0900
-+++ nethack-3.4.3-paranoid//doc/Guidebook.tex	2011-11-05 05:36:09.000000000 +0900
-@@ -2486,6 +2486,18 @@
+diff -urN nethack-3.4.3/doc/Guidebook.tex nethack-3.4.3-paranoid/doc/Guidebook.tex
+--- nethack-3.4.3/doc/Guidebook.tex	2003-12-08 08:39:13.000000000 +0900
++++ nethack-3.4.3-paranoid/doc/Guidebook.tex	2012-12-30 19:06:12.000000000 +0900
+@@ -2486,6 +2486,22 @@
  containing the symbols for the various object types.  Any omitted types
  are filled in at the end from the previous order.
  %.lp
@@ -51,6 +57,10 @@ diff -urN nethack-3.4.3-orig//doc/Guidebook.tex nethack-3.4.3-paranoid//doc/Guid
 +If true, asks you to type the word ``yes'' when quitting or entering
 +Explore mode, not just the letter ``y''.
 +%.lp
++\item[\ib{paranoid\_die}]
++If true, asks you  to type the word ``yes'' when dying in
++Explore mode, not just the letter ``y''.
++%.lp
 +\item[\ib{paranoid\_remove}]
 +If true, always show menu with the R and T commands even when there is
 +only one item to remove or take off.
@@ -58,10 +68,10 @@ diff -urN nethack-3.4.3-orig//doc/Guidebook.tex nethack-3.4.3-paranoid//doc/Guid
  \item[\ib{perm\_invent}]
  If true, always display your current inventory in a window.  This only
  makes sense for windowing system interfaces that implement this feature.
-diff -urN nethack-3.4.3-orig//doc/Guidebook.txt nethack-3.4.3-paranoid//doc/Guidebook.txt
---- nethack-3.4.3-orig//doc/Guidebook.txt	2003-12-08 08:39:13.000000000 +0900
-+++ nethack-3.4.3-paranoid//doc/Guidebook.txt	2011-11-05 05:36:09.000000000 +0900
-@@ -2607,6 +2607,18 @@
+diff -urN nethack-3.4.3/doc/Guidebook.txt nethack-3.4.3-paranoid/doc/Guidebook.txt
+--- nethack-3.4.3/doc/Guidebook.txt	2003-12-08 08:39:13.000000000 +0900
++++ nethack-3.4.3-paranoid/doc/Guidebook.txt	2012-12-30 19:05:30.000000000 +0900
+@@ -2607,6 +2607,22 @@
              Any  omitted  types  are filled in at the end from the previous
              order.
  
@@ -73,16 +83,20 @@ diff -urN nethack-3.4.3-orig//doc/Guidebook.txt nethack-3.4.3-paranoid//doc/Guid
 +            If true, asks you  to type the word ``yes'' when quitting or
 +            entering Explore mode, not just the letter ``y''.
 +
++          paranoid_die
++            If true, asks you  to type the word ``yes'' when dying in
++            Explore mode, not just the letter ``y''.
++
 +          paranoid_remove
 +            If true, always show menu with the R and T commands even when
-+	    there is only one item to remove or take off.
++            there is only one item to remove or take off.
 +
            perm_invent
              If true, always display your current  inventory  in  a  window.
              This  only makes sense for windowing system interfaces that im-
-diff -urN nethack-3.4.3-orig//include/config.h nethack-3.4.3-paranoid//include/config.h
---- nethack-3.4.3-orig//include/config.h	2003-12-08 08:39:13.000000000 +0900
-+++ nethack-3.4.3-paranoid//include/config.h	2011-11-06 00:47:59.000000000 +0900
+diff -urN nethack-3.4.3/include/config.h nethack-3.4.3-paranoid/include/config.h
+--- nethack-3.4.3/include/config.h	2003-12-08 08:39:13.000000000 +0900
++++ nethack-3.4.3-paranoid/include/config.h	2012-12-30 18:49:59.000000000 +0900
 @@ -340,6 +340,8 @@
  #define EXP_ON_BOTL	/* Show experience on bottom line */
  /* #define SCORE_ON_BOTL */	/* added by Gary Erickson (erickson@ucivax) */
@@ -92,24 +106,25 @@ diff -urN nethack-3.4.3-orig//include/config.h nethack-3.4.3-paranoid//include/c
  /*
   * Section 5:  EXPERIMENTAL STUFF
   *
-diff -urN nethack-3.4.3-orig//include/flag.h nethack-3.4.3-paranoid//include/flag.h
---- nethack-3.4.3-orig//include/flag.h	2003-12-08 08:39:13.000000000 +0900
-+++ nethack-3.4.3-paranoid//include/flag.h	2011-11-05 05:36:09.000000000 +0900
-@@ -216,6 +216,11 @@
+diff -urN nethack-3.4.3/include/flag.h nethack-3.4.3-paranoid/include/flag.h
+--- nethack-3.4.3/include/flag.h	2003-12-08 08:39:13.000000000 +0900
++++ nethack-3.4.3-paranoid/include/flag.h	2012-12-30 19:12:08.000000000 +0900
+@@ -216,6 +216,12 @@
  	boolean lan_mail;	/* mail is initialized */
  	boolean lan_mail_fetched; /* mail is awaiting display */
  #endif
 +#ifdef PARANOID
 +	boolean  paranoid_hit;  /* Ask for 'yes' when hitting peacefuls */
 +	boolean  paranoid_quit; /* Ask for 'yes' when quitting */
++	boolean  paranoid_die; /* Ask for 'yes' when dying */
 +	boolean  paranoid_remove; /* Always show menu for 'T' and 'R' */
 +#endif
  /*
   * Window capability support.
   */
-diff -urN nethack-3.4.3-orig//src/cmd.c nethack-3.4.3-paranoid//src/cmd.c
---- nethack-3.4.3-orig//src/cmd.c	2003-12-08 08:39:13.000000000 +0900
-+++ nethack-3.4.3-paranoid//src/cmd.c	2011-11-05 05:36:09.000000000 +0900
+diff -urN nethack-3.4.3/src/cmd.c nethack-3.4.3-paranoid/src/cmd.c
+--- nethack-3.4.3/src/cmd.c	2003-12-08 08:39:13.000000000 +0900
++++ nethack-3.4.3-paranoid/src/cmd.c	2012-12-30 18:49:59.000000000 +0900
 @@ -478,9 +478,26 @@
  STATIC_PTR int
  enter_explore_mode()
@@ -137,9 +152,9 @@ diff -urN nethack-3.4.3-orig//src/cmd.c nethack-3.4.3-paranoid//src/cmd.c
  			clear_nhwindow(WIN_MESSAGE);
  			You("are now in non-scoring explore mode.");
  			discover = TRUE;
-diff -urN nethack-3.4.3-orig//src/do_wear.c nethack-3.4.3-paranoid//src/do_wear.c
---- nethack-3.4.3-orig//src/do_wear.c	2003-12-08 08:39:13.000000000 +0900
-+++ nethack-3.4.3-paranoid//src/do_wear.c	2011-11-05 05:36:09.000000000 +0900
+diff -urN nethack-3.4.3/src/do_wear.c nethack-3.4.3-paranoid/src/do_wear.c
+--- nethack-3.4.3/src/do_wear.c	2003-12-08 08:39:13.000000000 +0900
++++ nethack-3.4.3-paranoid/src/do_wear.c	2012-12-30 18:49:59.000000000 +0900
 @@ -1078,7 +1078,11 @@
  			  "  Use 'R' command to remove accessories." : "");
  		return 0;
@@ -166,9 +181,9 @@ diff -urN nethack-3.4.3-orig//src/do_wear.c nethack-3.4.3-paranoid//src/do_wear.
  	if(!otmp) return(0);
  	if(!(otmp->owornmask & (W_RING | W_AMUL | W_TOOL))) {
  		You("are not wearing that.");
-diff -urN nethack-3.4.3-orig//src/end.c nethack-3.4.3-paranoid//src/end.c
---- nethack-3.4.3-orig//src/end.c	2003-12-08 08:39:13.000000000 +0900
-+++ nethack-3.4.3-paranoid//src/end.c	2011-11-05 05:36:09.000000000 +0900
+diff -urN nethack-3.4.3/src/end.c nethack-3.4.3-paranoid/src/end.c
+--- nethack-3.4.3/src/end.c	2003-12-08 08:39:13.000000000 +0900
++++ nethack-3.4.3-paranoid/src/end.c	2012-12-30 18:59:15.000000000 +0900
 @@ -112,7 +112,21 @@
  int
  done2()
@@ -202,7 +217,29 @@ diff -urN nethack-3.4.3-orig//src/end.c nethack-3.4.3-paranoid//src/end.c
  	boolean taken;
  	char kilbuf[BUFSZ], pbuf[BUFSZ];
  	winid endwin = WIN_ERR;
-@@ -725,8 +743,18 @@
+@@ -596,7 +614,21 @@
+ 			wizard ||
+ #endif
+ 			discover) && (how <= GENOCIDED)) {
++#ifdef PARANOID
++		char buf[BUFSZ];
++		int really_die = FALSE;
++
++		if (iflags.paranoid_die) {
++			getlin ("Die? [yes/no]",buf);
++			(void) lcase (buf);
++			if (!(strcmp (buf, "yes"))) really_die = TRUE;
++		} else {
++			if(yn("Die?") == 'y') really_die = TRUE;
++		}
++		if(really_die) goto die;
++#else /* PARANOID */
+ 		if(yn("Die?") == 'y') goto die;
++#endif /* PARANOID */
+ 		pline("OK, so you don't %s.",
+ 			(how == CHOKING) ? "choke" : "die");
+ 		if(u.uhpmax <= 0) u.uhpmax = u.ulevel * 8;	/* arbitrary */
+@@ -725,8 +757,18 @@
  
  	if (bones_ok) {
  #ifdef WIZARD
@@ -222,24 +259,25 @@ diff -urN nethack-3.4.3-orig//src/end.c nethack-3.4.3-paranoid//src/end.c
  		savebones(corpse);
  	    /* corpse may be invalid pointer now so
  		ensure that it isn't used again */
-diff -urN nethack-3.4.3-orig//src/options.c nethack-3.4.3-paranoid//src/options.c
---- nethack-3.4.3-orig//src/options.c	2003-12-08 08:39:13.000000000 +0900
-+++ nethack-3.4.3-paranoid//src/options.c	2011-11-05 05:36:09.000000000 +0900
-@@ -143,6 +143,11 @@
+diff -urN nethack-3.4.3/src/options.c nethack-3.4.3-paranoid/src/options.c
+--- nethack-3.4.3/src/options.c	2003-12-08 08:39:13.000000000 +0900
++++ nethack-3.4.3-paranoid/src/options.c	2012-12-30 18:54:09.000000000 +0900
+@@ -143,6 +143,12 @@
  #else
  	{"page_wait", (boolean *)0, FALSE, SET_IN_FILE},
  #endif
 +#ifdef PARANOID
 +	{"paranoid_hit", &iflags.paranoid_hit, FALSE, SET_IN_GAME},
 +	{"paranoid_quit", &iflags.paranoid_quit, FALSE, SET_IN_GAME},
++	{"paranoid_die", &iflags.paranoid_die, FALSE, SET_IN_GAME},
 +	{"paranoid_remove", &iflags.paranoid_remove, FALSE, SET_IN_GAME},
 +#endif
  	{"perm_invent", &flags.perm_invent, FALSE, SET_IN_GAME},
  	{"popup_dialog",  &iflags.wc_popup_dialog, FALSE, SET_IN_GAME},	/*WC*/
  	{"prayconfirm", &flags.prayconfirm, TRUE, SET_IN_GAME},
-diff -urN nethack-3.4.3-orig//src/potion.c nethack-3.4.3-paranoid//src/potion.c
---- nethack-3.4.3-orig//src/potion.c	2003-12-08 08:39:13.000000000 +0900
-+++ nethack-3.4.3-paranoid//src/potion.c	2011-11-05 05:36:09.000000000 +0900
+diff -urN nethack-3.4.3/src/potion.c nethack-3.4.3-paranoid/src/potion.c
+--- nethack-3.4.3/src/potion.c	2003-12-08 08:39:13.000000000 +0900
++++ nethack-3.4.3-paranoid/src/potion.c	2012-12-30 18:49:59.000000000 +0900
 @@ -1527,6 +1527,9 @@
  	register struct obj *potion, *obj;
  	struct obj *singlepotion;
@@ -291,9 +329,9 @@ diff -urN nethack-3.4.3-orig//src/potion.c nethack-3.4.3-paranoid//src/potion.c
  		return(0);
  	if (potion == obj && potion->quan == 1L) {
  		pline("That is a potion bottle, not a Klein bottle!");
-diff -urN nethack-3.4.3-orig//src/uhitm.c nethack-3.4.3-paranoid//src/uhitm.c
---- nethack-3.4.3-orig//src/uhitm.c	2003-12-08 08:39:13.000000000 +0900
-+++ nethack-3.4.3-paranoid//src/uhitm.c	2011-11-05 05:36:09.000000000 +0900
+diff -urN nethack-3.4.3/src/uhitm.c nethack-3.4.3-paranoid/src/uhitm.c
+--- nethack-3.4.3/src/uhitm.c	2003-12-08 08:39:13.000000000 +0900
++++ nethack-3.4.3-paranoid/src/uhitm.c	2012-12-30 18:49:59.000000000 +0900
 @@ -99,6 +99,9 @@
  struct obj *wep;	/* uwep for attack(), null for kick_monster() */
  {
