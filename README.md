@@ -10,4 +10,4 @@ Assuming you're installing this to /usr/local/xenosoz-overlay
 
     $ cd /usr/local/
     $ git clone git://github.com/xenosoz/xenosoz-overlay.git
-    # echo 'PORTDIR_OVERLAY="/usr/local/xenosoz-overlay"' >> /etc/make.conf
+    # echo 'PORTDIR_OVERLAY="/usr/local/xenosoz-overlay"' >> /etc/portage/make.conf
